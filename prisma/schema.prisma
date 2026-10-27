@@ -1,16 +1,16 @@
 // Portfolio JLNM : chaque rubrique du CV est une table.
 // By EasyX Corporate, JLNM 2026
 //
-// Développement local : SQLite. Avant le déploiement, passer provider à "postgresql"
-// (voir README). Aucun enum ni type spécifique n'est utilisé, la conversion est directe.
+// Base PostgreSQL (Neon), en production comme en local.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // connexion poolée (Neon), utilisée par l'application
+  directUrl = env("DATABASE_URL_UNPOOLED") // connexion directe, utilisée par prisma db push
 }
 
 // Rubrique « Informations personnelles » + « Profil » (une seule ligne, id = 1)
