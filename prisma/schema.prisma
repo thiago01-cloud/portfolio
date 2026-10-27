@@ -1,0 +1,152 @@
+// Portfolio JLNM : chaque rubrique du CV est une table.
+// By EasyX Corporate, JLNM 2026
+//
+// Développement local : SQLite. Avant le déploiement, passer provider à "postgresql"
+// (voir README). Aucun enum ni type spécifique n'est utilisé, la conversion est directe.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Rubrique « Informations personnelles » + « Profil » (une seule ligne, id = 1)
+model Profile {
+  id          Int      @id @default(1)
+  fullName    String   @default("")
+  headline    String   @default("") // ex. Lead développeur web et mobile
+  roleLine    String   @default("") // poste actuel, une phrase
+  pitch       String   @default("") // accroche de la page d'accueil
+  about       String   @default("") // texte « Profil » du CV
+  email       String   @default("")
+  phone       String   @default("")
+  location    String   @default("")
+  extra       String   @default("") // ex. Permis B
+  photoUrl    String   @default("")
+  cvUrl       String   @default("")
+  linkedinUrl String   @default("")
+  githubUrl   String   @default("")
+  updatedAt   DateTime @updatedAt
+}
+
+// Rubrique « Expérience professionnelle »
+model Experience {
+  id          Int      @id @default(autoincrement())
+  title       String
+  company     String
+  location    String   @default("")
+  startDate   String // AAAA-MM
+  endDate     String   @default("") // AAAA-MM, vide = poste actuel
+  description String   @default("")
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Rubrique « Formation »
+model Education {
+  id          Int      @id @default(autoincrement())
+  title       String
+  school      String
+  location    String   @default("")
+  startYear   Int      @default(0)
+  endYear     Int      @default(0)
+  description String   @default("")
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Rubrique « Compétences »
+model Skill {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String   @default("")
+  level     Int      @default(0) // 0 à 5, affiché en points comme sur le CV
+  position  Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// Rubrique « Langues »
+model Language {
+  id        Int      @id @default(autoincrement())
+  name      String
+  level     String   @default("")
+  rating    Int      @default(0) // 0 à 5, affiché en points comme sur le CV
+  position  Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// Rubrique « Centres d'intérêt »
+model Interest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  position  Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// Projets (réalisations)
+model Project {
+  id          Int            @id @default(autoincrement())
+  slug        String         @unique
+  name        String
+  shortLabel  String         @default("") // libellé de l'index d'accueil, ex. « PWA mariage »
+  context     String         @default("") // ex. GAM Gabon, depuis 2022
+  summary     String         @default("")
+  features    String         @default("") // une fonctionnalité par ligne
+  story       String         @default("") // histoire du projet (paragraphes séparés par une ligne vide)
+  stack       String         @default("") // technologies séparées par des virgules
+  platforms   String         @default("") // web,mobile,desktop
+  status      String         @default("development") // production | development | paused
+  themeColor  String         @default("#206566") // couleur principale du projet (fond des blocs)
+  accentColor String         @default("#1FA58F") // couleur d'accent du projet
+  logoUrl     String         @default("")
+  webShotUrl    String       @default("") // capture de présentation, version web (vitrine de l'accueil)
+  mobileShotUrl String       @default("") // capture de présentation, version mobile (vitrine de l'accueil)
+  demoUrl     String         @default("")
+  featured    Boolean        @default(false)
+  visible     Boolean        @default(true)
+  position    Int            @default(0)
+  images      ProjectImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProjectImage {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String   @default("")
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+}
+
+// Messages reçus par le formulaire de contact
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @default("")
+  phone     String   @default("")
+  subject   String   @default("")
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// Comptes d'administration
+model Admin {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}

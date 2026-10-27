@@ -20,7 +20,12 @@ espace d'administration sur `/admin`. Chaque rubrique du CV est une table.
 Les listes de l'admin s'affichent en **blocs** ou en **tableau** (bouton de bascule en haut à droite).
 Chaque élément peut être masqué du site sans être supprimé.
 
-## Démarrage en local (SQLite)
+## Base de données
+
+PostgreSQL sur Neon, en production comme en local (`DATABASE_URL` et `DATABASE_URL_UNPOOLED`
+dans `.env`, voir `.env.example`).
+
+## Démarrage en local
 
 ```
 npm install
@@ -31,29 +36,25 @@ npm run dev
 
 - Site : http://localhost:3000
 - Admin : http://localhost:3000/admin
-  (e-mail et mot de passe définis dans `.env` : `ADMIN_EMAIL`, `ADMIN_PASSWORD`).
-  Changez le mot de passe dans « Mon compte » après la première connexion.
 
 `npm run seed` remplit la base avec le CV et les 7 projets. Il est relançable :
-il ne remplit que les tables vides et ne touche pas à ce que vous avez modifié.
+il ne remplit que les tables vides et complète les champs encore vides, sans rien écraser.
 
-En local, les images envoyées depuis l'admin sont enregistrées dans `public/uploads`.
+Sans `BLOB_READ_WRITE_TOKEN`, les images envoyées depuis l'admin vont dans `public/uploads`
+(non versionné). Avec le jeton Blob dans `.env`, elles vont directement dans Vercel Blob.
 
-## Passage à Neon et déploiement sur Vercel
+## Déploiement (GitHub + Vercel + Neon + Blob)
 
-1. Dans `prisma/schema.prisma`, remplacer `provider = "sqlite"` par `provider = "postgresql"`.
-   Le schéma n'utilise ni enum ni type spécifique : rien d'autre à changer.
-2. Créer la base Neon (intégration Vercel Storage) : Vercel ajoute `DATABASE_URL`.
-3. Créer un store **Vercel Blob** sur le projet : Vercel ajoute `BLOB_READ_WRITE_TOKEN`.
-   Les images et le CV iront alors dans Blob.
-4. Ajouter dans les variables d'environnement Vercel : `AUTH_SECRET` (longue chaîne aléatoire),
+1. Pousser le dossier `app` sur un dépôt GitHub, puis l'importer dans Vercel.
+2. Dans le projet Vercel, onglet Storage : créer une base **Neon** et un store **Blob**,
+   reliés au projet (Production, Preview, Development).
+3. Variables d'environnement à ajouter : `AUTH_SECRET` (32 caractères minimum),
    `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
-5. Depuis votre PC, avec la `DATABASE_URL` de Neon dans `.env` :
-   `npx prisma db push` puis `npm run seed`.
-6. Pousser sur GitHub ; Vercel construit avec `npm run build`.
+4. Sur le PC, avec les variables Neon dans `.env` : `npx prisma db push` puis `npm run seed`.
+5. Redéployer depuis Vercel. Après chaque changement de `schema.prisma`, relancer
+   `npx prisma db push` avant de pousser le code.
 
-Limite Vercel : 4,5 Mo par envoi. Les images sont donc limitées à 4 Mo chacune ;
-envoyez-les une par une si elles sont lourdes.
+Limite Vercel : 4,5 Mo par envoi. Les images sont limitées à 4 Mo chacune.
 
 ## Structure
 
@@ -71,4 +72,3 @@ Ajouter une rubrique : créer le modèle dans `schema.prisma`, puis la déclarer
 `lib/resources.js`. Le menu, la liste (blocs et tableau) et les formulaires suivent.
 
 By EasyX Corporate, JLNM 2026
-"# portfolio" 
