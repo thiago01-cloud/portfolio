@@ -85,10 +85,18 @@ export default function ProjectGrid({ projects }) {
                 </ul>
                 <div className="pcard-meta">
                   <span className={`pstatus${p.status === 'production' ? ' live' : ''}`}>{p.statusLabel}</span>
-                  <Link className="pcard-link" href={`/projets/${p.slug}`}>
-                    Voir le projet
-                    <span className="sr-only"> {p.name}</span>
-                  </Link>
+                  <div className="pcard-actions">
+                    <Link className="pcard-link" href={`/projets/${p.slug}`}>
+                      Détails
+                      <span className="sr-only"> du projet {p.name}</span>
+                    </Link>
+                    {p.demoUrl ? (
+                      <a className="pcard-visit" href={p.demoUrl} target="_blank" rel="noopener noreferrer">
+                        {p.visitLabel}
+                        <span className="sr-only"> : {p.name} (nouvel onglet)</span>
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>

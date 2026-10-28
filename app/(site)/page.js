@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { formatPeriod, formatYears, splitLines, splitList, STATUS_LABELS, telHref } from '@/lib/format';
+import { formatPeriod, formatYears, splitLines, splitList, STATUS_LABELS, telHref, visitLabel } from '@/lib/format';
 import ProjectGrid from '@/components/site/ProjectGrid';
 import HeroShowcase from '@/components/site/HeroShowcase';
 import ContactForm from '@/components/site/ContactForm';
@@ -47,6 +47,8 @@ export default async function HomePage() {
     accentColor: pr.accentColor || '#8FD3CB',
     logoUrl: pr.logoUrl,
     featured: pr.featured,
+    demoUrl: pr.demoUrl || null,
+    visitLabel: visitLabel(pr.demoUrl),
     webShot: pr.webShotUrl || null,
     mobileShot: pr.mobileShotUrl || null,
     cover: pr.webShotUrl || pr.images[0]?.url || null,

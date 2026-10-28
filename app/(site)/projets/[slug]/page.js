@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { MAX_SCREENSHOTS, PLATFORM_LABELS, splitLines, splitList, STATUS_LABELS } from '@/lib/format';
+import { MAX_SCREENSHOTS, PLATFORM_LABELS, splitLines, splitList, STATUS_LABELS, visitLabel } from '@/lib/format';
 import ScreenshotGallery from '@/components/site/ScreenshotGallery';
 import ProjectTabs from '@/components/site/ProjectTabs';
 
@@ -73,8 +73,8 @@ export default async function ProjectPage({ params }) {
             </span>
             {platforms.length > 0 ? <span className="fact">{platforms.join(', ')}</span> : null}
             {project.demoUrl ? (
-              <a className="btn btn-light btn-small" href={project.demoUrl} target="_blank" rel="noreferrer">
-                Ouvrir le projet
+              <a className="btn btn-light btn-small" href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                {visitLabel(project.demoUrl)}
               </a>
             ) : null}
           </div>

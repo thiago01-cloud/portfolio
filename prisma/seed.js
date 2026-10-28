@@ -31,6 +31,9 @@ async function seedProjects() {
     } else {
       const patch = {};
       if (!existing.logoUrl) patch.logoUrl = p.logoUrl;
+      if (!existing.demoUrl && p.demoUrl) patch.demoUrl = p.demoUrl;
+      // GamPay : met à jour l'ancienne liste de fonctionnalités (GAB détaillé), sauf si elle a été modifiée dans l'admin
+      if (p.slug === 'gampay' && existing.features.includes('intégration des services sur un GAB')) patch.features = p.features;
       if (!existing.themeColor || existing.themeColor === '#206566') patch.themeColor = p.themeColor;
       if (!existing.accentColor || existing.accentColor === '#1FA58F' || existing.accentColor === '#1C5D8A') {
         patch.accentColor = p.accentColor;

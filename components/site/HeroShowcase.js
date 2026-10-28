@@ -90,6 +90,12 @@ export default function HeroShowcase({ projects }) {
       <p className="showcase-caption" aria-live="polite">
         <strong>{p.name}</strong>
         {p.shortLabel ? <span>{p.shortLabel}</span> : null}
+        {p.demoUrl ? (
+          <a className="showcase-visit" href={p.demoUrl} target="_blank" rel="noopener noreferrer">
+            {p.visitLabel}
+            <span className="sr-only"> : {p.name} (nouvel onglet)</span>
+          </a>
+        ) : null}
       </p>
 
       <div className="picker" role="group" aria-label="Choisir un projet à afficher">

@@ -672,3 +672,19 @@ img { max-width: 100%; }
 .story { max-width: 70ch; }
 .story p { font-size: 1.12rem; line-height: 1.8; margin: 0 0 1.2em; }
 .story p:first-of-type { font: 400 1.35rem/1.6 var(--display); color: var(--t); }
+
+/* Liens de visite des projets */
+.pcard-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 14px; }
+.pcard-visit {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; color: var(--t); text-decoration: none;
+  font-weight: 700; font-size: .88rem; padding: 7px 14px; border-radius: 999px;
+}
+.pcard-visit::after { content: ""; width: 7px; height: 7px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+.pcard-visit:hover { background: var(--a); color: #111; }
+.showcase-visit {
+  margin-left: 4px; color: var(--teal-ink); background: var(--mint); text-decoration: none;
+  font-weight: 700; font-size: .85rem; padding: 4px 12px; border-radius: 999px;
+}
+.showcase-visit:hover { background: #fff; }
+@media (max-width: 420px) { .pcard-meta { flex-direction: column; align-items: flex-start; } .pcard-actions { justify-content: flex-start; } }
